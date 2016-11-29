@@ -58,34 +58,7 @@ FEEDFILE="/home/petfeeder/lastfeed"
 cupsToFeed = 1
 motorTime = cupsToFeed * 27 # It takes 27 seconds of motor turning (~1.75 rotations) to get 1 cup of feed
 
-
-# Function that gets Chuck Norris jokes from the internet. It uses an HTTP GET and then a JSON parser
-def getChuckNorrisQuote():
-    # The database where the jokes are stored
-    ICNDB="http://api.icndb.com/jokes/random"
-    # Doing a HTTP request to get the response (resp) and content (content)
-    resp, content = httplib2.Http().request(ICNDB)
-    # The content is in the following JSON format and needs to be parsed
-    # {u'type': u'success', u'value' : {u'joke': 'Text of the joke', u'id': 238, u'categories': []}}
-    parsed_content = json.loads(content)
-    joke = "\n\n** Random Chuck Norris Quote **:\n" + html2text.html2text(parsed_content['value']['joke'])
-    return joke
     
-
-# Function that gets a number trivia from the internet. It uses an HTTP GET and then a JSON parser
-def getNumberTrivia():
-    # The database where the trivia are stored
-    NUMDB="http://numbersapi.com/random/trivia?json"
-    # Doing a HTTP request to get the response (resp) and content (content)
-    resp, content = httplib2.Http().request(NUMDB)
-    # The content is in the following JSON format and needs to be parsed
-    # {u'text': u'Text of trivia', u'type' : u'trivia, u'number': <number>, u'found': True}
-    parsed_content = json.loads(content)
-    trivia = "\n\n** Fact about the number " + str(parsed_content['number']) + " **\n"
-    trivia = trivia + parsed_content['text']
-    return trivia
-    
-
 # Function to check email
 def checkmail():
     global lastEmailCheck
