@@ -42,6 +42,16 @@ feedInterval = 28800 # This translates to 8 hours in seconds
 FEEDFILE="/home/petfeeder/lastfeed"
 cupsToFeed = 1
 motorTime = cupsToFeed * 27 # It takes 27 seconds of motor turning (~1.75 rotations) to get 1 cup of feed
+<<<<<<< HEAD
+=======
+
+    
+# Function to check email
+def checkmail():
+    global lastEmailCheck
+    global lastFeed
+    global feedInterval
+>>>>>>> refs/remotes/origin/master
     
 
 def buttonpressed(PIN):
