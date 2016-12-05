@@ -36,7 +36,7 @@ RESETBUTTONPIN = 13
 
 # Variables for feeding information
 readyToFeed = False # not used now but for future use
-feedInterval = 28800 # This translates to 8 hours in seconds
+feedInterval = 86400 # This translates to 24 hours in seconds
 FEEDFILE="/home/petfeeder/lastfeed"
 cupsToFeed = 7
 motorTime = 20 # It takes 27 seconds of motor turning (~1.75 rotations) to get 1 cup of feed. We're using 20 seconds to feed 3/4ths of a cup.
