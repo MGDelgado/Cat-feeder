@@ -29,15 +29,6 @@ MOTORON = True
 # Here is our logfile
 LOGFILE = "/tmp/petfeeder.log"
 
-# Variables for checking email
-GMAILHOSTNAME = 'imap.gmail.com' # Insert your mailserver here - Gmail uses 'imap.gmail.com'
-MAILBOX = 'Inbox' # Insert the name of your mailbox. Gmail uses 'Inbox'
-GMAILUSER = # Insert your emsail username
-GMAILPASSWD = # Insert your email password
-NEWMAIL_OFFSET = 0
-lastEmailCheck = time.time()
-MAILCHECKDELAY = 30  # Don't check email too often since Gmail will complain
-
 # GPIO pins for feeder control
 MOTORCONTROLPIN = 19
 FEEDBUTTONPIN = 6
