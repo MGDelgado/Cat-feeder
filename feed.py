@@ -1,7 +1,7 @@
 ###########################################################################################
 # petfeeder.py v 1.0
 #
-# Author: Krish Sivakumar
+# Author/ Credit: Krish Sivakumar
 # Created Dec 2015
 #
 # Program to automate on-demand pet feeding through the internet
@@ -40,6 +40,7 @@ feedInterval = 86400 # This translates to 24 hours in seconds
 FEEDFILE="/home/petfeeder/lastfeed"
 cupsToFeed = 7
 motorTime = 20 # It takes 27 seconds of motor turning (~1.75 rotations) to get 1 cup of feed. We're using 20 seconds to feed 3/4ths of a cup.
+delayBetweenBowls = 3
 
 # check for button press
 def buttonpressed(PIN):
@@ -75,7 +76,7 @@ def feednow():
     printlcd(0,0,"Feeding now.....")
     if MOTORON:
         for i in range (1, cupsToFeed):
-            time.sleep(3) # pause between rotations, unless 0
+            time.sleep(delayBetweenBowls) # pause between rotations, unless 0
             GPIO.output(MOTORCONTROLPIN, True)
             time.sleep(motorTime)
             GPIO.output(MOTORCONTROLPIN, False)
