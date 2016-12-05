@@ -15,15 +15,9 @@
 
 from imapclient import IMAPClient, SEEN
 import time
-import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
-from email.MIMEText import MIMEText
-from email import Encoders
 import os
 import sys
 import RPi.GPIO as GPIO
-from Adafruit_CharLCD import Adafruit_CharLCD
 import httplib2
 import json
 import html2text
@@ -31,8 +25,6 @@ import html2text
 
 DEBUG = False
 MOTORON = True
-CHUCKNORRIS = False
-NUMBERTRIVIA = True
 
 # Here is our logfile
 LOGFILE = "/tmp/petfeeder.log"
