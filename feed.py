@@ -41,95 +41,7 @@ FEEDFILE="/home/petfeeder/lastfeed"
 cupsToFeed = 7
 motorTime = 20 # It takes 27 seconds of motor turning (~1.75 rotations) to get 1 cup of feed. We're using 20 seconds to feed 3/4ths of a cup.
 
-    
-# Function to check email
-def checkmail():
-    global lastEmailCheck
-    global lastFeed
-    global feedInterval
-    
-    if (time.time() > (lastEmailCheck + MAILCHECKDELAY)):  # Make sure that that atleast MAILCHECKDELAY time has passed
-        lastEmailCheck = time.time()
-        server = IMAPClient(GMAILHOSTNAME, use_uid=True, ssl=True)  # Create the server class from IMAPClient with HOSTNAME mail server
-        server.login(GMAILUSER, GMAILPASSWD)
-        server.select_folder(MAILBOX)
-        
-        # See if there are any messages with subject "When" that are unread
-        whenMessages = server.search([u'UNSEEN', u'SUBJECT', u'When'])
-
-        # Respond to the when messages
-        if whenMessages:
-            for msg in whenMessages:
-                msginfo = server.fetch([msg], ['BODY[HEADER.FIELDS (FROM)]'])
-                fromAddress = str(msginfo[msg].get('BODY[HEADER.FIELDS (FROM)]')).split('<')[1].split('>')[0]
-                msgBody = "The last feeding was done on " + time.strftime("%b %d at %I:%M %P", time.localtime(lastFeed))
-
-                if (time.time() - lastFeed) > feedInterval:
-                    msgBody = msgBody + "\nReady to feed now!"
-                else:
-                    msgBody = msgBody + "\nThe next feeding can begin on " + time.strftime("%b %d at %I:%M %P", time.localtime(lastFeed + feedInterval))
-
-                if NUMBERTRIVIA:
-                    msgBody = msgBody + getNumberTrivia()
-
-                if CHUCKNORRIS:
-                    msgBody = msgBody + getChuckNorrisQuote()
-                                                
-                sendemail(fromAddress, "Thanks for your feeding query", msgBody)
-                server.add_flags(whenMessages, [SEEN])
-
-
-        # See if there are any messages with subject "Feed" that are unread
-        feedMessages = server.search([u'UNSEEN', u'SUBJECT', u'Feed'])
-        
-        # Respond to the feed messages and then exit
-        if feedMessages:
-            for msg in feedMessages:
-                msginfo = server.fetch([msg], ['BODY[HEADER.FIELDS (FROM)]'])
-                fromAddress = str(msginfo[msg].get('BODY[HEADER.FIELDS (FROM)]')).split('<')[1].split('>')[0]
-
-                msgBody = "The last feeding was done at " + time.strftime("%b %d at %I:%M %P", time.localtime(lastFeed))
-                if (time.time() - lastFeed) > feedInterval:
-                    msgBody = msgBody + "\nReady to be fed, will be feeding Lucky shortly"
-                else:
-                    msgBody = msgBody + "\nThe next feeding can begin at " + time.strftime("%b %d at %I:%M %P", time.localtime(lastFeed + feedInterval))
-
-                if NUMBERTRIVIA:
-                    msgBody = msgBody + getNumberTrivia()
-
-                if CHUCKNORRIS:
-                    msgBody = msgBody + getChuckNorrisQuote()
-                                                
-                sendemail(fromAddress, "Thanks for your feeding request", msgBody)
-
-                server.add_flags(feedMessages, [SEEN])
-            return True
-
-    return False
-
-
-def sendemail(to, subject, text, attach=None):
-    msg = MIMEMultipart()
-    msg['From'] = GMAILUSER
-    msg['To'] = to
-    msg['Subject'] = subject
-    msg.attach(MIMEText(text))
-    if attach:
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(open(attach, 'rb').read())
-        Encoders.encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(attach))
-        msg.attach(part)
-    mailServer = smtplib.SMTP("smtp.gmail.com", 587)
-    mailServer.ehlo()
-    mailServer.starttls()
-    mailServer.ehlo()
-    mailServer.login(GMAILUSER, GMAILPASSWD)
-    mailServer.sendmail(GMAILUSER, to, msg.as_string())
-    mailServer.close()
-
-
-
+# check for button press
 def buttonpressed(PIN):
     # Check if the button is pressed
     global GPIO
@@ -141,12 +53,6 @@ def buttonpressed(PIN):
         return True
     else:
         return False
-
-
-def remotefeedrequest():
-    # At this time we are only checking for email
-    # Other mechanisms for input (e.g. web interface or iOS App) is a TO-DO
-    return checkmail()
 
 
 def printlcd(row, col, LCDmesg):
@@ -164,7 +70,6 @@ def feednow():
     global MOTORCONTROLPIN
     global motorTime
     global lastFeed
-    global GMAILUSER
 
     lcd.clear()
     printlcd(0,0,"Feeding now.....")
@@ -176,7 +81,6 @@ def feednow():
             GPIO.output(MOTORCONTROLPIN, False)
         
         printlcd(0,1, "Done!")
-        sendemail(GMAILUSER, "Fed at " + time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(lastFeed)), "Feeding done!")
         time.sleep(2)
     return time.time()
 
